@@ -1,0 +1,52 @@
+
+Manifest.yml file Example:
+**************************
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: testpod
+spec:
+  containers:
+    - name: c01
+      image: ubuntu
+      command: ["/bin/bash", "-c", "echo Hello-World"]
+    - name: c02
+      image: centos
+      command: ["/bin/bash", "-c", "echo bye-World"] 
+  restartPolicy: Never      # Default to always
+
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: testpod
+spec:
+  containers:
+    - name: c01
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo Hello-World; sleep 5; done"]  (or) command: ['sh', '-c', 'echo "Hello, Kubernetes!" && sleep 3600'] 
+  restartPolicy: Never      # Default to always
+
+Commands:
+*********
+- minikube start
+      - To start the Minikube
+- kubectl apply -f manifest.yml
+      - To Create Pod and Run a Container
+- kubectl get pods
+      - Get details of Pods
+-
+
+apiVersion: batch/v1 
+kind: Job
+metadata:  
+name: hello
+spec: 
+ template:    # This is the pod template    
+spec:      
+containers:      
+- name: hello       
+ image: busybox        
+command: ['sh', '-c', 'echo "Hello, Kubernetes!" && sleep 3600']      
+restartPolicy: OnFailure    # The pod template ends here

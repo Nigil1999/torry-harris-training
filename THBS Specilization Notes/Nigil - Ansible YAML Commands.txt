@@ -1,0 +1,255 @@
+
+Creating File:
+**************
+
+---
+
+# ansible -m file -a 'path=/tmp/surekha.txt state=present' all
+
+# YAML - yet another markup lang
+
+- name: create at new file and delete it.
+  hosts: all
+  tasks:
+    - name: create username file in tmp directory
+      file:
+        path: '/tmp/surekha.txt'
+        state: touch
+    - name: copy ansible hosts file on every node
+      copy:
+        src: '/etc/ansible/hosts'
+        dest: '/tmp'
+        
+# touch hello.yml
+
+# gedit or vi hello.yml
+
+# :wq
+
+# ansible-playbook hello.yml
+
+# which apache2
+
+
+Install:
+********
+
+- name: install httpd packages and update sample webpage and start service
+
+  hosts: all
+
+  become: yes # root user going to excute
+
+
+
+  tasks:
+
+    - name: Update all packages to their latest version
+
+      apt:
+
+        name: "*"
+
+        state: latest
+
+
+
+    - name: Install apache2 httpd  (state=present is optional)
+
+      apt:
+
+        name: apache2
+
+        state: present
+
+
+
+    - name: Copy index test page
+
+      copy:
+
+        src: "index.html"
+
+        dest: "/var/www/index.html"
+
+        force: yes
+
+
+
+    - name: Restart Apache
+
+      service:
+
+        name: apache2
+
+        state: restarted
+
+#Go to Node VM,
+    - To Check apache2 is installed type: $which apache2 = /usr/sbin/apache2
+                                         $cd /usr
+                                         $cd /sbin
+                                         $ls = Check in middle there will be a apche file
+                                         $cd /var/www/htmlcd
+                                         $ls = Shows index.html
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Update:
+*******
+# which apache2
+
+- name: install httpd packages and update sample webpage and start service
+
+  hosts: all
+
+  become: yes # root user going to excute
+
+
+
+  tasks:
+
+    - name: Update all packages to their latest version
+
+      apt:
+
+        name: "*"
+
+        state: latest
+
+
+
+    - name: Install apache2 httpd  (state=present is optional)
+
+      apt:
+
+        name: apache2
+
+        state: present
+
+
+
+    - name: Copy index test page
+
+      copy:
+
+        src: "index.html"
+
+        dest: "/var/www/index.html"
+
+        force: yes
+
+
+
+    - name: Restart Apache
+
+      service:
+
+        name: apache2
+
+        state: restarted
+
+#Go to Node VM,
+    - To Check Ubuntu is installed type: $which apache2 = /usr/sbin/apache2
+                                         $cd /usr
+                                         $cd /sbin
+                                         $ls = Check in middle there will be a apche file
+                                         $cd /var/www/htmlcd
+                                         $ls = Shows index.html
+    - To check your default webpage: Go to Mozilla Firefox and type localhost, it shows your index.html page.
+                                         
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Git Install:
+************
+---
+- name: Install git on all nodes
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install Git
+      apt:
+       name: git
+       state: present
+       update_cache: yes
+
+#Then go to Node VM and type $git --version - Displays Version
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+To Create Multiple Users in a Node VM using Loop:
+*************************************************
+
+---
+
+- name: learn loop inside playbook
+
+  hosts: all
+
+  become: yes
+
+  tasks:
+
+    - name: Add several users on nodes
+
+      ansible.builtin.user:
+
+        name: "{{ item }}"
+
+        state: present
+
+      loop:
+
+        - testuser1
+
+        - testuser2
+
+        - nighp
+
+        - foo
+
+# In Control VM = $ansible-playbook loop2.yml -K
+# In Node VM = $cd /home
+               $ls - Displays all created users
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Declaring and Initializing a Variable:
+**************************************
+
+---
+
+- name: learn varibale declation and usage inside playbook
+
+  hosts: all
+
+  become: yes
+
+  vars:
+
+    package: apache2
+
+    user_allowed: true
+
+
+
+  tasks:
+
+    - name: We are unstall {{package}}
+
+      apt:
+
+        name: { { package } }
+
+        state: absent
+
+    - name: should not present {{package}}
+
+      service:
+
+        name: apache2
+
+        state: stopped
+
+# Go to Node VM: $sudo systemctl status apache2 - It displays the status of apache2
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
